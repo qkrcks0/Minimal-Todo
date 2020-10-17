@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-OSDPart2.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-OSDPart2.iml" group="OSDPart2" />
       <module fileurl="file://$PROJECT_DIR$/Minimal-Todo.iml" filepath="$PROJECT_DIR$/Minimal-Todo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/OSDPart2.iml" filepath="$PROJECT_DIR$/.idea/modules/OSDPart2.iml" group="OSDPart2" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="OSDPart2/app" />
