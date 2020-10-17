@@ -2,6 +2,9 @@ package com.example.avjindersinghsekhon.minimaltodo.Main;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -26,6 +29,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -57,10 +61,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class MainFragment extends AppDefaultFragment {
     private RecyclerViewEmptySupport mRecyclerView;
     private FloatingActionButton mAddToDoItemFAB;
-    private ArrayList<ToDoItem> mToDoItemsArrayList;
+    private static ArrayList<ToDoItem> mToDoItemsArrayList;
+    private ImageView copyBtn;
+    public static ArrayList<ToDoItem> sortItem;
+    public static ArrayList<ToDoItem> searchItem; //duplication of mToDoItemsArrayList
     private CoordinatorLayout mCoordLayout;
     public static final String TODOITEM = "com.avjindersinghsekhon.com.avjindersinghsekhon.minimaltodo.MainActivity";
-    private MainFragment.BasicListAdapter adapter;
+    private static MainFragment.BasicListAdapter adapter;
     private static final int REQUEST_ID_TODO_ITEM = 100;
     private ToDoItem mJustDeletedToDoItem;
     private int mIndexOfDeletedToDoItem;
@@ -137,6 +144,13 @@ public class MainFragment extends AppDefaultFragment {
 //        mToDoItemsArrayList = new ArrayList<>();
 //        makeUpItems(mToDoItemsArrayList, testStrings.length);
 
+        //duplicate mToDoItemsArrayList
+        searchItem = new ArrayList<>();
+        searchItem.addAll(mToDoItemsArrayList);
+
+        //duplicate mToDoItemsArrayList
+        sortItem = new ArrayList<>();
+        sortItem.addAll(mToDoItemsArrayList);
 
         mCoordLayout = (CoordinatorLayout) view.findViewById(R.id.myCoordinatorLayout);
         mAddToDoItemFAB = (FloatingActionButton) view.findViewById(R.id.addToDoItemFAB);
@@ -588,6 +602,24 @@ public class MainFragment extends AppDefaultFragment {
 //                mColorTextView = (TextView)v.findViewById(R.id.toDoColorTextView);
                 mColorImageView = (ImageView) v.findViewById(R.id.toDoListItemColorImageView);
                 linearLayout = (LinearLayout) v.findViewById(R.id.listItemLinearLayout);
+
+                copyBtn = (ImageView) mView.findViewById(R.id.copyBtn);
+                //OnClickListener for CopyClipboard Button
+                copyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ToDoItem item = items.get(ViewHolder.this.getAdapterPosition());
+                        String toDoTextContainer = item.getToDoText();
+                        String toDoTextBodyDescriptionContainer = item.getmToDoDescription();
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        String combinationText = "Title : " + toDoTextContainer + "\nDescription : "
+                                + toDoTextBodyDescriptionContainer + "\n -Copied From MinimalToDo";
+                        ClipData clip = ClipData.newPlainText("text", combinationText);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(getContext(), "Copied To Clipboard!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
 
 
@@ -619,6 +651,37 @@ public class MainFragment extends AppDefaultFragment {
         }
     }
 
+    public static void search(String userInput) {
+        mToDoItemsArrayList.clear();
+        if(userInput.length() == 0){
+            mToDoItemsArrayList.addAll(searchItem);
+        }else{
+            for (ToDoItem toDoItems : searchItem) {
+                if (toDoItems.getToDoText().toLowerCase().contains(userInput)) {
+                    mToDoItemsArrayList.add(toDoItems);
+                }
+            }
+            Log.e("dfdf", mToDoItemsArrayList.toString());
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void sortByTitle(){
+        mToDoItemsArrayList.clear();
+        ArrayList<String> sortList = new ArrayList<>();
+        for(ToDoItem toDoItem : sortItem){
+            sortList.add(toDoItem.getToDoText());
+        }
+        Collections.sort(sortList);
+        for(int i = 0; i<sortList.size(); i++){
+            for(ToDoItem toDoItem : sortItem){
+                if(sortList.get(i).equals(toDoItem.getToDoText())){
+                    mToDoItemsArrayList.add(toDoItem);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onDestroy() {

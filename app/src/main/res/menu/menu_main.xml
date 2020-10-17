@@ -4,7 +4,12 @@
     tools:context=".AddToDo.AddToDoActivity">
 
 
-
+    <item
+        android:title="search"
+        android:id="@+id/search_option"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.SearchView"/>
 
     <item
         android:id="@+id/preferences"
@@ -14,6 +19,11 @@
 
     <item android:title="@string/about"
         android:id="@+id/aboutMeMenuItem"
+        app:showAsAction="never"
+        />
+
+    <item android:title="Sort by title"
+        android:id="@+id/sort"
         app:showAsAction="never"
         />
 
